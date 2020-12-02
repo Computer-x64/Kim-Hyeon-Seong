@@ -1,0 +1,60 @@
+
+DataLap API
+Java
+import java.io.BufferedReader;import java.io.DataOutputStream;import java.io.InputStreamReader;import java.net.HttpURLConnection;import java.net.URL;public class APIExamDatalabTrend {public static void main(String[] args) {String clientId = "YOUR_CLIENT_ID";//애플리케이션 클라이언트 아이디값";String clientSecret = "YOUR_CLIENT_SECRET";//애플리케이션 클라이언트 시크릿값";try {String apiURL = "https://openapi.naver.com/v1/datalab/search";String body = "{\"startDate\":\"2017-01-01\",\"endDate\":\"2017-04-30\",\"timeUnit\":\"month\",\"keywordGroups\":[{\"groupName\":\"한글\",\"keywords\":[\"한글\",\"korean\"]},{\"groupName\":\"영어\",\"keywords\":[\"영어\",\"english\"]}],\"device\":\"pc\",\"ages\":[\"1\",\"2\"],\"gender\":\"f\"}";URL url = new URL(apiURL);HttpURLConnection con = (HttpURLConnection)url.openConnection();con.setRequestMethod("POST");con.setRequestProperty("X-Naver-Client-Id", clientId);con.setRequestProperty("X-Naver-Client-Secret", clientSecret);con.setRequestProperty("Content-Type", "application/json");con.setDoOutput(true);DataOutputStream wr = new DataOutputStream(con.getOutputStream());wr.writeBytes(body);wr.flush();wr.close();int responseCode = con.getResponseCode();BufferedReader br;if(responseCode==200) { // 정상 호출br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));} else {  // 에러 발생br = new BufferedReader(new InputStreamReader(con.getErrorStream(), "UTF-8"));}String inputLine;StringBuffer response = new StringBuffer();while ((inputLine = br.readLine()) != null) {response.append(inputLine);}br.close();System.out.println(response.toString());} catch (Exception e) {System.out.println(e);}}}
+DataLap API
+PHP
+<?php// 네이버 데이터랩 통합검색어 트렌드 Open API 예제$client_id = "YOUR_CLIENT_ID"; // 네이버 개발자센터에서 발급받은 CLIENT ID$client_secret = "YOUR_CLIENT_SECRET";// 네이버 개발자센터에서 발급받은 CLIENT SECRET$url = "https://openapi.naver.com/v1/datalab/search";$body = "{\"startDate\":\"2017-01-01\",\"endDate\":\"2017-04-30\",\"timeUnit\":\"month\",\"keywordGroups\":[{\"groupName\":\"한글\",\"keywords\":[\"한글\",\"korean\"]},{\"groupName\":\"영어\",\"keywords\":[\"영어\",\"english\"]}],\"device\":\"pc\",\"ages\":[\"1\",\"2\"],\"gender\":\"f\"}";$ch = curl_init();curl_setopt($ch, CURLOPT_URL, $url);curl_setopt($ch, CURLOPT_POST, true);curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);$headers = array();$headers[] = "X-Naver-Client-Id: ".$client_id;$headers[] = "X-Naver-Client-Secret: ".$client_secret;$headers[] = "Content-Type: application/json";curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);// SSL 이슈가 있을 경우, 아래 코드 주석 해제// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);curl_setopt($ch, CURLOPT_POSTFIELDS, $body);$response = curl_exec ($ch);$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);echo "status_code:".$status_code." ";curl_close ($ch);if($status_code == 200) {echo $response;} else {echo "Error 내용:".$response;}?>
+DataLap API
+Node.js
+var request = require('request');var client_id = 'YOUR_CLIENT_ID';var client_secret = 'YOUR_CLIENT_SECRET';var api_url = 'https://openapi.naver.com/v1/datalab/search';var request_body = {"startDate": "2017-01-01","endDate": "2017-04-30","timeUnit": "month","keywordGroups": [{"groupName": "한글","keywords": ["한글","korean"]},{"groupName": "영어","keywords": ["영어","english"]}],"device": "pc","ages": ["1","2"],"gender": "f"};request.post({url: api_url,body: JSON.stringify(request_body),headers: {'X-Naver-Client-Id': client_id,'X-Naver-Client-Secret': client_secret,'Content-Type': 'application/json'}},function (error, response, body) {console.log(response.statusCode);console.log(body);});
+DataLap API
+Python
+#-*- coding: utf-8 -*-import osimport sysimport urllib.requestclient_id = "YOUR_CLIENT_ID"client_secret = "YOUR_CLIENT_SECRET"url = "https://openapi.naver.com/v1/datalab/search";body = "{\"startDate\":\"2017-01-01\",\"endDate\":\"2017-04-30\",\"timeUnit\":\"month\",\"keywordGroups\":[{\"groupName\":\"한글\",\"keywords\":[\"한글\",\"korean\"]},{\"groupName\":\"영어\",\"keywords\":[\"영어\",\"english\"]}],\"device\":\"pc\",\"ages\":[\"1\",\"2\"],\"gender\":\"f\"}";request = urllib.request.Request(url)request.add_header("X-Naver-Client-Id",client_id)request.add_header("X-Naver-Client-Secret",client_secret)request.add_header("Content-Type","application/json")response = urllib.request.urlopen(request, data=body.encode("utf-8"))rescode = response.getcode()if(rescode==200):response_body = response.read()print(response_body.decode('utf-8'))else:print("Error Code:" + rescode)
+DataLap API
+C#
+using System;using System.Net;using System.Text;using System.IO;namespace NaverAPI_Guide{public class APIExamDatalabTrend{static void Main(string[] args){string url = "https://openapi.naver.com/v1/datalab/search";HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);request.Headers.Add("X-Naver-Client-Id", "YOUR-CLIENT-ID");request.Headers.Add("X-Naver-Client-Secret", "YOUR-CLIENT-SECRET");request.ContentType = "application/json";request.Method = "POST";string body = "{\"startDate\":\"2017-01-01\",\"endDate\":\"2017-04-30\",\"timeUnit\":\"month\",\"keywordGroups\":[{\"groupName\":\"한글\",\"keywords\":[\"한글\",\"korean\"]},{\"groupName\":\"영어\",\"keywords\":[\"영어\",\"english\"]}],\"device\":\"pc\",\"ages\":[\"1\",\"2\"],\"gender\":\"f\"}";byte[] byteDataParams = Encoding.UTF8.GetBytes(body);request.ContentLength = byteDataParams.Length;Stream st = request.GetRequestStream();st.Write(byteDataParams, 0, byteDataParams.Length);st.Close();HttpWebResponse response = (HttpWebResponse)request.GetResponse();Stream stream = response.GetResponseStream();StreamReader reader = new StreamReader(stream, Encoding.UTF8);string text = reader.ReadToEnd();stream.Close();response.Close();reader.Close();Console.WriteLine(text);}}}
+Google Trends API
+Rstudio
+# Install and load the readr and gtrendsR packagesinstalled.packages("readr", "gtrendsR")library(readr)library(gtrendsR)# Load your keywords list (.csv file)kwlist = readLines("Your-keywords-list-path.csv")# The for loop downloads the data for every single keyword in your listresultslist < - list()for (keywords in kwlist){# Set the geographic region, time span, Google product,... # for more information read the official documentation https://cran.r-project.org/web/packages/gtrendsR/gtrendsR.pdfcountry=c('IT')time=("2018-08-01 2018-08-27")channel='web'trends = gtrends(keywords, gprop =channel, geo=country, time = time )resultslist[[keywords]] < - trends$interest_over_time}# Merge all the data into a dataframeoutput < - as.data.frame(do.call("rbind", resultslist))# Download the dataframe "output" as a .csv filewrite.csv(output, "download.csv")
+
+---
+
+Terminal
+pip install
+C:\Users\Computer>curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py% Total    % Received % Xferd  Average Speed   Time    Time     Time  CurrentDload  Upload   Total   Spent    Left  Speed100 1825k  100 1825k    0     0  1825k      0  0:00:01  0:00:01 --:--:-- 1743k
+Terminal
+python
+C:\Users\Computer>python get-pip.pyCollecting pipDownloading pip-20.1.1-py2.py3-none-any.whl (1.5 MB)|████████████████████████████████| 1.5 MB 218 kB/sInstalling collected packages: pipAttempting uninstall: pipFound existing installation: pip 19.2.3Uninstalling pip-19.2.3:Successfully uninstalled pip-19.2.3Successfully installed pip-20.1.1
+Terminal
+pytrends
+(venv) C:\Users\Computer\Desktop\test>pip install pytrendsRequirement already satisfied: pytrends in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (4.7.3)Requirement already satisfied: requests in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pytrends) (2.23.0)Requirement already satisfied: pandas>=0.25 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pytrends) (1.0.4)Requirement already satisfied: lxml in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pytrends) (4.5.1)Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from requests->pytrends) (1.25.9)Requirement already satisfied: certifi>=2017.4.17 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from requests->pytrends) (2020.4.5.1)Requirement already satisfied: idna<3,>=2.5 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from requests->pytrends) (2.9)Requirement already satisfied: chardet<4,>=3.0.2 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from requests->pytrends) (3.0.4)
+Terminal
+pandas
+(venv) C:\Users\Computer\Desktop\test>pip install pandasRequirement already satisfied: pandas in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (1.0.4)Requirement already satisfied: pytz>=2017.2 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pandas) (2020.1)Requirement already satisfied: python-dateutil>=2.6.1 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pandas) (2.8.1)Requirement already satisfied: numpy>=1.13.3 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from pandas) (1.18.4)Requirement already satisfied: six>=1.5 in c:\users\computer\pycharmprojects\untitled\venv\lib\site-packages (from python-dateutil>=2.6.1->pandas) (1.15.0)
+
+---
+
+
+Pytrends API
+python
+from pytrends.request import TrendReq# Google에 연결pythrends를 사용한다.import pandas as pd# pandas 모듈을 가져오고pd라고 입력하여 사용한다.import csv# csv모듈을 가져온다.File = open("LifeLongEducation.txt", "r", encoding='UTF-16')# LifeLongEducation.txt파일을 읽어오고 인코딩은UTF-16으로하여File에 할당한다.subGroup = File.readlines()# subGroup에 인코딩한File을 라인별로 읽어온다.print(subGroup)# 읽어온 내용출력한다(확인).pytrends = TrendReq(hl='ko', tz=540,)# hi='한국', tz=표준시간대,)for i in range(len(subGroup)//2):# 두라인씩 잘라 순차적 검색를 실시 현재 구글트랜드 제한상 최대5개까지만 가능keywords = [subGroup[(i * 2)].strip(), subGroup[(i * 2) + 1].strip()]# 5개씩 할 경우) subGroup[(i*5)].strip(), subGroup[(i*5)+1].strip(), subGroup[(i*5)+2].strip(), subGroup[(i*5)+3].strip(), subGroup[(i*5)+4].strip())pytrends.build_payload(keywords, cat=0, timeframe='2018-01-01 2018-12-31', geo='KR', gprop='')# cat은 별도의 범주를 정하는경우(카테고리), timeframe='자료 시간대 최근5년인경우today 5-y', gprop='필터링 할 속성'#getdatainfo = pytrends.interest_over_time()  'today 5-y'getdatainfo = pytrends.interest_by_region(resolution='CITY', inc_low_vol=True, inc_geo_code=False)# resolution='CITY'는 도시수준, 'COUNTRY'는 국가수준, 'DMA'는 메트로수준, 'REGION' 지역수준 데이터반환, inc_Low_vol=(True/False)낮은 볼륨 국가/지역에 대한 데이터 포함, inc_geo_code=(True/False)데이터의 이름과 함께 국가ISO코드 포함getdatainfo.to_csv("LLE" + str(i) +".csv", "w", encoding='EUC-KR')# 데이터를 얻어LLE(i).csv(엑셀) 파일에 작성한다. LLE0 ∼ LLE43 까지 생성됨. ","는 데이터간 구분기호를 뜻하며, CSV로 생성시킬 것 이기때문에 쉼표로 구별하였음 인코딩의 경우 한글이 지원되는EUC-KR로 인코딩 (UTF-16도 지원하지만 해당 데이터의 경우 CSV에서 한글데이터가 손상되는 경우가 발생하였음)File.close()# 열었던 파일을 닫는다.
+
+--
+
+
+파일병합
+명령프롬트(CMD)
+C:\Users\Computer\Desktop\test\all>type *.csv>all.csvLLE0.csvLLE1.csv....
+# 폴더내 모든 .CSV파일이 합쳐짐(기본 세로병합)
+# 해당없는 CSV파일 주의
+파일병합
+배치파일 생성(.bat)
+type *.csv>all.csv
+# 작성후 확장자 .bat으로 저장후 집합시킨 폴더로 이동후 실행# 해당없는 CSV파일 주의
+세로파일병합
+VBA(Visual Basic for Applications)
+Sub SheetUnit()Dim i As IntegerDim ShtA As WorksheetDim rngB As RangeApplication.ScreenUpdating = FalseSet ShtA = Sheets(1)For i = 2 To Sheets.CountSet rngB = ShtA.Cells(3, Columns.Count).End(1).Offset(-2, 1)Sheets(i).UsedRange.Copy rngBNext iCells.EntireColumn.AutoFitEnd Sub
+# Microsoft Excel 실행 후 Alt+F11키를 눌러
+삽입-모듈에 해당 코딩을 한후 F5키를 눌러주면 병합이 된다.# 해당코딩은 가로기준으로 병합시 사용
+
